@@ -70,7 +70,9 @@ const Navbar = () => {
                   {isProvider ? "Pro account" : "Customer"}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">My bookings</DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/bookings">My bookings</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">

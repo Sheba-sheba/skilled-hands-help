@@ -6,8 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { ArrowLeft, Camera, Loader2, Wrench, HardHat, User } from "lucide-react";
+import { CATEGORIES, type CategorySlug } from "@/lib/categories";
 
 type Role = "customer" | "provider";
 
@@ -26,6 +34,7 @@ const Auth = () => {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [bio, setBio] = useState("");
+  const [category, setCategory] = useState<CategorySlug>("handyman");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -80,6 +89,7 @@ const Auth = () => {
           city: city.trim() || null,
           bio: bio.trim() || null,
           role,
+          ...(role === "provider" ? { category } : {}),
         },
       },
     });
@@ -278,16 +288,34 @@ const Auth = () => {
                   </div>
 
                   {role === "provider" && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="su-bio">Short bio</Label>
-                      <Textarea
-                        id="su-bio"
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        placeholder="Master electrician, 12 years experience…"
-                        rows={3}
-                      />
-                    </div>
+                    <>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="su-category">Trade</Label>
+                        <Select value={category} onValueChange={(v) => setCategory(v as CategorySlug)}>
+                          <SelectTrigger id="su-category">
+                            <SelectValue placeholder="Pick your trade" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CATEGORIES.map((c) => (
+                              <SelectItem key={c.slug} value={c.slug}>
+                                {c.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="su-bio">Short bio</Label>
+                        <Textarea
+                          id="su-bio"
+                          value={bio}
+                          onChange={(e) => setBio(e.target.value)}
+                          placeholder="Master electrician, 12 years experience…"
+                          rows={3}
+                          maxLength={500}
+                        />
+                      </div>
+                    </>
                   )}
 
                   <div className="space-y-1.5">

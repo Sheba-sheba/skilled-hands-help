@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          address: string
+          created_at: string
+          customer_id: string
+          id: string
+          job_description: string
+          provider_id: string
+          scheduled_date: string
+          scheduled_time: string
+          status: Database["public"]["Enums"]["booking_status"]
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          customer_id: string
+          id?: string
+          job_description: string
+          provider_id: string
+          scheduled_date: string
+          scheduled_time: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_id?: string
+          id?: string
+          job_description?: string
+          provider_id?: string
+          scheduled_date?: string
+          scheduled_time?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -47,6 +94,51 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      providers: {
+        Row: {
+          category: Database["public"]["Enums"]["provider_category"]
+          created_at: string
+          headline: string | null
+          hourly_rate: number | null
+          id: string
+          is_active: boolean
+          rating: number
+          review_count: number
+          service_area: string | null
+          updated_at: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["provider_category"]
+          created_at?: string
+          headline?: string | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean
+          rating?: number
+          review_count?: number
+          service_area?: string | null
+          updated_at?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["provider_category"]
+          created_at?: string
+          headline?: string | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean
+          rating?: number
+          review_count?: number
+          service_area?: string | null
+          updated_at?: string
+          user_id?: string
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -86,6 +178,13 @@ export type Database = {
     }
     Enums: {
       app_role: "customer" | "provider" | "admin"
+      booking_status:
+        | "pending"
+        | "accepted"
+        | "declined"
+        | "completed"
+        | "cancelled"
+      provider_category: "plumber" | "electrician" | "handyman" | "cleaner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -214,6 +313,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["customer", "provider", "admin"],
+      booking_status: [
+        "pending",
+        "accepted",
+        "declined",
+        "completed",
+        "cancelled",
+      ],
+      provider_category: ["plumber", "electrician", "handyman", "cleaner"],
     },
   },
 } as const
