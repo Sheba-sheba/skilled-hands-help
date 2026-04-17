@@ -288,16 +288,34 @@ const Auth = () => {
                   </div>
 
                   {role === "provider" && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="su-bio">Short bio</Label>
-                      <Textarea
-                        id="su-bio"
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        placeholder="Master electrician, 12 years experience…"
-                        rows={3}
-                      />
-                    </div>
+                    <>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="su-category">Trade</Label>
+                        <Select value={category} onValueChange={(v) => setCategory(v as CategorySlug)}>
+                          <SelectTrigger id="su-category">
+                            <SelectValue placeholder="Pick your trade" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CATEGORIES.map((c) => (
+                              <SelectItem key={c.slug} value={c.slug}>
+                                {c.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="su-bio">Short bio</Label>
+                        <Textarea
+                          id="su-bio"
+                          value={bio}
+                          onChange={(e) => setBio(e.target.value)}
+                          placeholder="Master electrician, 12 years experience…"
+                          rows={3}
+                          maxLength={500}
+                        />
+                      </div>
+                    </>
                   )}
 
                   <div className="space-y-1.5">
