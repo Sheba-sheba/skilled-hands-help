@@ -6,8 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { ArrowLeft, Camera, Loader2, Wrench, HardHat, User } from "lucide-react";
+import { CATEGORIES, type CategorySlug } from "@/lib/categories";
 
 type Role = "customer" | "provider";
 
@@ -26,6 +34,7 @@ const Auth = () => {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [bio, setBio] = useState("");
+  const [category, setCategory] = useState<CategorySlug>("handyman");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
