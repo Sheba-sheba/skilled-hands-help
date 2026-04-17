@@ -89,6 +89,7 @@ const Auth = () => {
           city: city.trim() || null,
           bio: bio.trim() || null,
           role,
+          ...(role === "provider" ? { category } : {}),
         },
       },
     });
