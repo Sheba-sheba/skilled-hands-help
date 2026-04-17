@@ -36,7 +36,7 @@ const Hero = () => {
               <input
                 type="text"
                 placeholder="Enter your address or zip"
-                className="flex-1 bg-transparent py-2 text-sm placeholder:text-primary-foreground/40 focus:outline-none"
+                className="flex-1 bg-transparent py-2 text-sm text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none"
               />
             </div>
             <Button variant="hero" size="lg" className="shrink-0">
