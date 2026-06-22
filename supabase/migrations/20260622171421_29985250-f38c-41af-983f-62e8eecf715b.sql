@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Public can view profiles of active providers (safe fields via view)" ON public.profiles;
