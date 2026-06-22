@@ -71,7 +71,7 @@ const Bookings = () => {
       );
       const { data: profiles } = userIds.length
         ? await supabase
-            .from("profiles")
+            .from("public_profiles")
             .select("user_id, full_name, avatar_url")
             .in("user_id", userIds)
         : { data: [] as { user_id: string; full_name: string | null; avatar_url: string | null }[] };

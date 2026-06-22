@@ -67,7 +67,7 @@ const Providers = () => {
       const ids = provs.map((p) => p.user_id);
       const { data: profiles } = ids.length
         ? await supabase
-            .from("profiles")
+            .from("public_profiles")
             .select("user_id, full_name, avatar_url, city")
             .in("user_id", ids)
         : { data: [] as { user_id: string; full_name: string | null; avatar_url: string | null; city: string | null }[] };
