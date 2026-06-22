@@ -295,6 +295,11 @@ const ProviderDetail = () => {
               <p className="mt-1 text-sm text-muted-foreground">
                 Tell us when and where — they'll confirm shortly.
               </p>
+              {draftApplied && (
+                <div className="mt-3 rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-foreground">
+                  ✨ Pre-filled from your AI assistant draft. Review and adjust before sending.
+                </div>
+              )}
 
               <div className="mt-5 space-y-4">
                 <div className="space-y-1.5">
