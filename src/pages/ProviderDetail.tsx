@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategory, type CategorySlug } from "@/lib/categories";
+import { BOOKING_DRAFT_KEY, type BookingDraft } from "@/pages/AiToolbox";
 
 interface ProviderDetail {
   id: string;
