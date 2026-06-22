@@ -93,7 +93,7 @@ const ProviderDetail = () => {
       }
 
       const { data: profile } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("full_name, avatar_url, city, bio")
         .eq("user_id", prov.user_id)
         .maybeSingle();
