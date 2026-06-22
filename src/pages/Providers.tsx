@@ -217,6 +217,30 @@ const Providers = () => {
 
       {/* Results */}
       <section className="container py-10 md:py-14">
+        {pendingDraft && (
+          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-accent/30 bg-accent/5 p-4">
+            <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+            <div className="flex-1 text-sm">
+              <p className="font-semibold">Booking draft ready</p>
+              <p className="mt-0.5 text-muted-foreground line-clamp-2">
+                "{pendingDraft.job_description}"
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Pick a {cat.label.toLowerCase()} below — your details will pre-fill the booking form.
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                sessionStorage.removeItem(BOOKING_DRAFT_KEY);
+                setPendingDraft(null);
+              }}
+            >
+              Dismiss
+            </Button>
+          </div>
+        )}
         {loading ? (
           <div className="flex items-center justify-center py-20 text-muted-foreground">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Loading pros…
