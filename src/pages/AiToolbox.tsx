@@ -11,10 +11,21 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Mail, CalendarClock, MessageCircle, Sparkles, Send, Loader2, Copy, Check } from "lucide-react";
+import { Mail, CalendarClock, MessageCircle, Sparkles, Send, Loader2, Copy, Check, ClipboardCheck, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
+import { getCategory, type CategorySlug } from "@/lib/categories";
+
+export interface BookingDraft {
+  category: CategorySlug;
+  job_description: string;
+  address?: string;
+  scheduled_date?: string;
+  scheduled_time?: string;
+}
+export const BOOKING_DRAFT_KEY = "toolbox:booking_draft";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
 const AUTH_HEADERS = {
