@@ -16,6 +16,8 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { ArrowLeft, Loader2, MapPin, Star } from "lucide-react";
 import { CATEGORIES, getCategory } from "@/lib/categories";
+import { BOOKING_DRAFT_KEY, type BookingDraft } from "@/pages/AiToolbox";
+import { Sparkles } from "lucide-react";
 
 interface ProviderRow {
   id: string;
