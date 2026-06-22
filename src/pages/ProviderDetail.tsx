@@ -74,6 +74,33 @@ const ProviderDetail = () => {
   const [address, setAddress] = useState("");
   const [job, setJob] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [draftApplied, setDraftApplied] = useState(false);
+
+  // Apply booking draft from chatbot if present
+  useEffect(() => {
+    if (!provider) return;
+    try {
+      const raw = sessionStorage.getItem(BOOKING_DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as BookingDraft;
+      if (draft.category !== provider.category) return;
+      if (draft.job_description && !job) setJob(draft.job_description);
+      if (draft.address && !address) setAddress(draft.address);
+      if (draft.scheduled_time) setTime(draft.scheduled_time);
+      if (draft.scheduled_date) {
+        const d = new Date(`${draft.scheduled_date}T00:00:00`);
+        if (!isNaN(d.getTime()) && d >= new Date(new Date().setHours(0, 0, 0, 0))) {
+          setDate(d);
+        }
+      }
+      setDraftApplied(true);
+      sessionStorage.removeItem(BOOKING_DRAFT_KEY);
+      toast.success("Draft from AI assistant applied");
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider]);
 
   useEffect(() => {
     if (!id) return;
