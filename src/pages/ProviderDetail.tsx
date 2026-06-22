@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategory, type CategorySlug } from "@/lib/categories";
+import { BOOKING_DRAFT_KEY, type BookingDraft } from "@/pages/AiToolbox";
 
 interface ProviderDetail {
   id: string;
@@ -73,6 +74,33 @@ const ProviderDetail = () => {
   const [address, setAddress] = useState("");
   const [job, setJob] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [draftApplied, setDraftApplied] = useState(false);
+
+  // Apply booking draft from chatbot if present
+  useEffect(() => {
+    if (!provider) return;
+    try {
+      const raw = sessionStorage.getItem(BOOKING_DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as BookingDraft;
+      if (draft.category !== provider.category) return;
+      if (draft.job_description && !job) setJob(draft.job_description);
+      if (draft.address && !address) setAddress(draft.address);
+      if (draft.scheduled_time) setTime(draft.scheduled_time);
+      if (draft.scheduled_date) {
+        const d = new Date(`${draft.scheduled_date}T00:00:00`);
+        if (!isNaN(d.getTime()) && d >= new Date(new Date().setHours(0, 0, 0, 0))) {
+          setDate(d);
+        }
+      }
+      setDraftApplied(true);
+      sessionStorage.removeItem(BOOKING_DRAFT_KEY);
+      toast.success("Draft from AI assistant applied");
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider]);
 
   useEffect(() => {
     if (!id) return;
@@ -267,6 +295,11 @@ const ProviderDetail = () => {
               <p className="mt-1 text-sm text-muted-foreground">
                 Tell us when and where — they'll confirm shortly.
               </p>
+              {draftApplied && (
+                <div className="mt-3 rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-foreground">
+                  ✨ Pre-filled from your AI assistant draft. Review and adjust before sending.
+                </div>
+              )}
 
               <div className="mt-5 space-y-4">
                 <div className="space-y-1.5">
