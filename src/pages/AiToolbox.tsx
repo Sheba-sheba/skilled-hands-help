@@ -309,18 +309,30 @@ function ChatTool() {
     await sendMessage({ text });
   };
 
+  const navigate = useNavigate();
+
+  const useDraft = (draft: BookingDraft) => {
+    try {
+      sessionStorage.setItem(BOOKING_DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      /* ignore */
+    }
+    toast.success("Draft saved — pick a pro");
+    navigate(`/providers/${draft.category}`);
+  };
+
   const suggestions = [
+    "My kitchen sink is leaking under the cabinet",
+    "Need an electrician to install a ceiling fan",
+    "Looking for a deep clean before move-out",
     "How does booking work?",
-    "What services can I find on Toolbox?",
-    "How do I become a pro?",
-    "How are pros vetted?",
   ];
 
   return (
     <Card className="flex h-[600px] flex-col">
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><MessageCircle className="h-5 w-5 text-accent" /> Toolbox Assistant</CardTitle>
-        <CardDescription>Ask anything about Toolbox — bookings, pricing, becoming a pro.</CardDescription>
+        <CardDescription>Ask a question — or describe a job and I'll prep a booking draft.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4 overflow-hidden">
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto pr-1">
@@ -338,19 +350,55 @@ function ChatTool() {
             </div>
           )}
           {messages.map((m) => {
-            const text = m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
+            const text = m.parts
+              .map((p) => (p.type === "text" ? p.text : ""))
+              .join("");
             const isUser = m.role === "user";
+
+            // Extract any booking-draft tool results in this message
+            const drafts: BookingDraft[] = m.parts
+              .filter((p: any) =>
+                p.type === "tool-create_booking_draft" &&
+                p.state === "output-available" &&
+                p.output?.draft
+              )
+              .map((p: any) => p.output.draft as BookingDraft);
+
             return (
-              <div key={m.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${
-                  isUser ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
-                }`}>
-                  {isUser ? text : (
-                    <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1">
-                      <ReactMarkdown>{text || "…"}</ReactMarkdown>
+              <div key={m.id} className={`flex flex-col gap-2 ${isUser ? "items-end" : "items-start"}`}>
+                {(text || !drafts.length) && (
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${
+                    isUser ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
+                  }`}>
+                    {isUser ? text : (
+                      <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1">
+                        <ReactMarkdown>{text || "…"}</ReactMarkdown>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {drafts.map((d, i) => {
+                  const cat = getCategory(d.category);
+                  return (
+                    <div key={i} className="w-full max-w-[85%] rounded-2xl border border-accent/30 bg-accent/5 p-4">
+                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent">
+                        <ClipboardCheck className="h-3.5 w-3.5" /> Booking draft
+                      </div>
+                      <p className="mt-2 font-display text-base">
+                        {cat?.label ?? d.category}
+                      </p>
+                      <p className="mt-1 text-sm text-foreground">{d.job_description}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                        {d.scheduled_date && <span className="rounded bg-background px-2 py-0.5">📅 {d.scheduled_date}</span>}
+                        {d.scheduled_time && <span className="rounded bg-background px-2 py-0.5">🕐 {d.scheduled_time}</span>}
+                        {d.address && <span className="rounded bg-background px-2 py-0.5">📍 {d.address}</span>}
+                      </div>
+                      <Button size="sm" className="mt-3 w-full" onClick={() => useDraft(d)}>
+                        Pick a {cat?.label.toLowerCase() ?? "pro"} <ArrowRight className="h-4 w-4" />
+                      </Button>
                     </div>
-                  )}
-                </div>
+                  );
+                })}
               </div>
             );
           })}
