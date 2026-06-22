@@ -18,6 +18,7 @@ const navLinks = [
   { href: "/#services", label: "Services" },
   { href: "/#how", label: "How it works" },
   { href: "/#pros", label: "Pros" },
+  { href: "/ai-toolbox", label: "AI Toolbox" },
   { href: "/#join", label: "Join as Pro" },
 ];
 
