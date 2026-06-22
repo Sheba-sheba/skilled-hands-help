@@ -48,6 +48,20 @@ const Providers = () => {
   const [minRating, setMinRating] = useState<string>("0");
   const [sort, setSort] = useState<SortKey>("rating");
 
+  const [pendingDraft, setPendingDraft] = useState<BookingDraft | null>(null);
+
+  useEffect(() => {
+    if (!cat) return;
+    try {
+      const raw = sessionStorage.getItem(BOOKING_DRAFT_KEY);
+      if (!raw) return setPendingDraft(null);
+      const d = JSON.parse(raw) as BookingDraft;
+      setPendingDraft(d.category === cat.slug ? d : null);
+    } catch {
+      setPendingDraft(null);
+    }
+  }, [cat]);
+
   useEffect(() => {
     if (!cat) return;
     setLoading(true);
