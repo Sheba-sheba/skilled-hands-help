@@ -34,6 +34,7 @@ import {
   Upload,
 } from "lucide-react";
 import { CATEGORIES, type CategorySlug } from "@/lib/categories";
+import type { Database } from "@/integrations/supabase/types";
 
 type DayKey = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
@@ -210,7 +211,7 @@ const ProOnboarding = () => {
       license_doc_name = licenseFile.name;
     }
 
-    const update: Record<string, unknown> = {
+    const update: Database["public"]["Tables"]["providers"]["Update"] = {
       category,
       headline: headline.trim(),
       service_area: serviceArea.trim(),
@@ -218,7 +219,7 @@ const ProOnboarding = () => {
       hourly_rate: priceMin, // legacy field — keep aligned with min price
       price_min: priceMin,
       price_max: priceMax,
-      availability,
+      availability: availability as unknown as Database["public"]["Tables"]["providers"]["Update"]["availability"],
       is_active: true,
       onboarded_at: new Date().toISOString(),
     };
