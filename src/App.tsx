@@ -10,6 +10,7 @@ import Providers from "./pages/Providers.tsx";
 import ProviderDetail from "./pages/ProviderDetail.tsx";
 import Bookings from "./pages/Bookings.tsx";
 import AiToolbox from "./pages/AiToolbox.tsx";
+import ProOnboarding from "./pages/ProOnboarding.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/providers/:category" element={<Providers />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/ai-toolbox" element={<AiToolbox />} />
+            <Route path="/pro/onboarding" element={<ProOnboarding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -106,45 +106,66 @@ export type Database = {
       }
       providers: {
         Row: {
+          availability: Json
           category: Database["public"]["Enums"]["provider_category"]
           created_at: string
           headline: string | null
           hourly_rate: number | null
           id: string
           is_active: boolean
+          license_doc_name: string | null
+          license_doc_path: string | null
+          onboarded_at: string | null
+          price_max: number | null
+          price_min: number | null
           rating: number
           review_count: number
           service_area: string | null
           updated_at: string
           user_id: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
           years_experience: number | null
         }
         Insert: {
+          availability?: Json
           category?: Database["public"]["Enums"]["provider_category"]
           created_at?: string
           headline?: string | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean
+          license_doc_name?: string | null
+          license_doc_path?: string | null
+          onboarded_at?: string | null
+          price_max?: number | null
+          price_min?: number | null
           rating?: number
           review_count?: number
           service_area?: string | null
           updated_at?: string
           user_id: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
           years_experience?: number | null
         }
         Update: {
+          availability?: Json
           category?: Database["public"]["Enums"]["provider_category"]
           created_at?: string
           headline?: string | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean
+          license_doc_name?: string | null
+          license_doc_path?: string | null
+          onboarded_at?: string | null
+          price_max?: number | null
+          price_min?: number | null
           rating?: number
           review_count?: number
           service_area?: string | null
           updated_at?: string
           user_id?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
           years_experience?: number | null
         }
         Relationships: []
@@ -198,6 +219,7 @@ export type Database = {
       }
       public_providers: {
         Row: {
+          availability: Json | null
           avatar_url: string | null
           bio: string | null
           category: Database["public"]["Enums"]["provider_category"] | null
@@ -208,9 +230,14 @@ export type Database = {
           hourly_rate: number | null
           id: string | null
           is_active: boolean | null
+          price_max: number | null
+          price_min: number | null
           rating: number | null
           review_count: number | null
           service_area: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
           years_experience: number | null
         }
         Relationships: []
@@ -228,6 +255,7 @@ export type Database = {
         | "completed"
         | "cancelled"
       provider_category: "plumber" | "electrician" | "handyman" | "cleaner"
+      verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -364,6 +392,7 @@ export const Constants = {
         "cancelled",
       ],
       provider_category: ["plumber", "electrician", "handyman", "cleaner"],
+      verification_status: ["pending", "verified", "rejected"],
     },
   },
 } as const
