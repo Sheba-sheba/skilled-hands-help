@@ -21,7 +21,6 @@ import { Sparkles } from "lucide-react";
 
 interface ProviderRow {
   id: string;
-  user_id: string;
   category: string;
   headline: string | null;
   hourly_rate: number | null;
@@ -68,10 +67,11 @@ const Providers = () => {
 
     (async () => {
       const { data: provs, error } = await supabase
-        .from("providers")
-        .select("id, user_id, category, headline, hourly_rate, years_experience, service_area, rating, review_count")
-        .eq("category", cat.slug)
-        .eq("is_active", true);
+        .from("public_providers")
+        .select(
+          "id, category, headline, hourly_rate, years_experience, service_area, rating, review_count, full_name, avatar_url, city"
+        )
+        .eq("category", cat.slug);
 
       if (error || !provs) {
         setProviders([]);
@@ -79,20 +79,21 @@ const Providers = () => {
         return;
       }
 
-      // Fetch profiles in a second round (RLS allows public read)
-      const ids = provs.map((p) => p.user_id);
-      const { data: profiles } = ids.length
-        ? await supabase
-            .from("public_profiles")
-            .select("user_id, full_name, avatar_url, city")
-            .in("user_id", ids)
-        : { data: [] as { user_id: string; full_name: string | null; avatar_url: string | null; city: string | null }[] };
-
-      const byUser = new Map((profiles ?? []).map((p) => [p.user_id, p]));
       setProviders(
         provs.map((p) => ({
-          ...p,
-          profile: byUser.get(p.user_id) ?? null,
+          id: p.id as string,
+          category: p.category as string,
+          headline: p.headline,
+          hourly_rate: p.hourly_rate,
+          years_experience: p.years_experience,
+          service_area: p.service_area,
+          rating: p.rating as number,
+          review_count: p.review_count as number,
+          profile: {
+            full_name: p.full_name,
+            avatar_url: p.avatar_url,
+            city: p.city,
+          },
         }))
       );
       setLoading(false);
