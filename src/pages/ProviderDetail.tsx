@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -29,7 +29,6 @@ import { BOOKING_DRAFT_KEY, type BookingDraft } from "@/pages/AiToolbox";
 
 interface ProviderDetail {
   id: string;
-  user_id: string;
   category: CategorySlug;
   headline: string | null;
   hourly_rate: number | null;
@@ -108,10 +107,11 @@ const ProviderDetail = () => {
 
     (async () => {
       const { data: prov, error } = await supabase
-        .from("providers")
-        .select("id, user_id, category, headline, hourly_rate, years_experience, service_area, rating, review_count")
+        .from("public_providers")
+        .select(
+          "id, category, headline, hourly_rate, years_experience, service_area, rating, review_count, full_name, avatar_url, city, bio"
+        )
         .eq("id", id)
-        .eq("is_active", true)
         .maybeSingle();
 
       if (error || !prov) {
@@ -120,13 +120,22 @@ const ProviderDetail = () => {
         return;
       }
 
-      const { data: profile } = await supabase
-        .from("public_profiles")
-        .select("full_name, avatar_url, city, bio")
-        .eq("user_id", prov.user_id)
-        .maybeSingle();
-
-      setProvider({ ...prov, category: prov.category as CategorySlug, profile });
+      setProvider({
+        id: prov.id as string,
+        category: prov.category as CategorySlug,
+        headline: prov.headline,
+        hourly_rate: prov.hourly_rate,
+        years_experience: prov.years_experience,
+        service_area: prov.service_area,
+        rating: prov.rating as number,
+        review_count: prov.review_count as number,
+        profile: {
+          full_name: prov.full_name,
+          avatar_url: prov.avatar_url,
+          city: prov.city,
+          bio: prov.bio,
+        },
+      });
       setLoading(false);
     })();
   }, [id]);
@@ -223,12 +232,12 @@ const ProviderDetail = () => {
           <div className="space-y-6">
             <div className="rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                <Avatar className="h-20 w-20 border-2 border-border">
-                  <AvatarImage src={provider.profile?.avatar_url ?? undefined} />
-                  <AvatarFallback className="bg-primary text-2xl text-primary-foreground">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
+                <ProfileAvatar
+                  avatar={provider.profile?.avatar_url}
+                  initials={initials}
+                  className="h-20 w-20"
+                  fallbackClassName="text-2xl"
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <h1 className="font-display text-3xl">{name}</h1>

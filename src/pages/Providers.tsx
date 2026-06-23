@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -275,12 +275,11 @@ const Providers = () => {
                   className="group flex flex-col rounded-2xl border border-border bg-card p-6 shadow-soft transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-elegant"
                 >
                   <div className="flex items-start gap-4">
-                    <Avatar className="h-14 w-14 border-2 border-border">
-                      <AvatarImage src={p.profile?.avatar_url ?? undefined} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
+                    <ProfileAvatar
+                      avatar={p.profile?.avatar_url}
+                      initials={initials}
+                      className="h-14 w-14"
+                    />
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate font-display text-xl">{name}</h3>
                       <div className="mt-1 flex items-center gap-1 text-sm">
