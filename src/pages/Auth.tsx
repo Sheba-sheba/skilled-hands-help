@@ -110,12 +110,10 @@ const Auth = () => {
         .upload(path, avatarFile, { upsert: true });
 
       if (!upErr) {
-        const { data: { publicUrl } } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(path);
+        // Store the storage path; bucket is private and reads use signed URLs.
         await supabase
           .from("profiles")
-          .update({ avatar_url: publicUrl })
+          .update({ avatar_url: path })
           .eq("user_id", newUser.id);
       }
     }
