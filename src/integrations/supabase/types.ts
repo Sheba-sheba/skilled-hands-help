@@ -59,6 +59,13 @@ export type Database = {
             referencedRelation: "providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "bookings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_providers"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -189,15 +196,28 @@ export type Database = {
         }
         Relationships: []
       }
+      public_providers: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          category: Database["public"]["Enums"]["provider_category"] | null
+          city: string | null
+          created_at: string | null
+          full_name: string | null
+          headline: string | null
+          hourly_rate: number | null
+          id: string | null
+          is_active: boolean | null
+          rating: number | null
+          review_count: number | null
+          service_area: string | null
+          years_experience: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role: "customer" | "provider" | "admin"
