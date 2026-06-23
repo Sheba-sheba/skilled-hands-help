@@ -71,6 +71,11 @@ const Navbar = () => {
                   {isProvider ? "Pro account" : "Customer"}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {isProvider && (
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link to="/pro/onboarding">Pro listing</Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild className="cursor-pointer">
                   <Link to="/bookings">My bookings</Link>
                 </DropdownMenuItem>

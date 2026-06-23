@@ -120,7 +120,8 @@ const Auth = () => {
 
     setSuLoading(false);
     toast.success(`Welcome to Toolbox, ${fullName.split(" ")[0]}!`);
-    navigate("/");
+    // Pros must complete onboarding before their listing is published.
+    navigate(role === "provider" ? "/pro/onboarding" : "/");
   };
 
   return (
