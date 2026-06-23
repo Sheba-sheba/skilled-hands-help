@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -21,7 +21,6 @@ import { Sparkles } from "lucide-react";
 
 interface ProviderRow {
   id: string;
-  user_id: string;
   category: string;
   headline: string | null;
   hourly_rate: number | null;
@@ -68,10 +67,11 @@ const Providers = () => {
 
     (async () => {
       const { data: provs, error } = await supabase
-        .from("providers")
-        .select("id, user_id, category, headline, hourly_rate, years_experience, service_area, rating, review_count")
-        .eq("category", cat.slug)
-        .eq("is_active", true);
+        .from("public_providers")
+        .select(
+          "id, category, headline, hourly_rate, years_experience, service_area, rating, review_count, full_name, avatar_url, city"
+        )
+        .eq("category", cat.slug);
 
       if (error || !provs) {
         setProviders([]);
@@ -79,20 +79,21 @@ const Providers = () => {
         return;
       }
 
-      // Fetch profiles in a second round (RLS allows public read)
-      const ids = provs.map((p) => p.user_id);
-      const { data: profiles } = ids.length
-        ? await supabase
-            .from("public_profiles")
-            .select("user_id, full_name, avatar_url, city")
-            .in("user_id", ids)
-        : { data: [] as { user_id: string; full_name: string | null; avatar_url: string | null; city: string | null }[] };
-
-      const byUser = new Map((profiles ?? []).map((p) => [p.user_id, p]));
       setProviders(
         provs.map((p) => ({
-          ...p,
-          profile: byUser.get(p.user_id) ?? null,
+          id: p.id as string,
+          category: p.category as string,
+          headline: p.headline,
+          hourly_rate: p.hourly_rate,
+          years_experience: p.years_experience,
+          service_area: p.service_area,
+          rating: p.rating as number,
+          review_count: p.review_count as number,
+          profile: {
+            full_name: p.full_name,
+            avatar_url: p.avatar_url,
+            city: p.city,
+          },
         }))
       );
       setLoading(false);
@@ -274,12 +275,11 @@ const Providers = () => {
                   className="group flex flex-col rounded-2xl border border-border bg-card p-6 shadow-soft transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-elegant"
                 >
                   <div className="flex items-start gap-4">
-                    <Avatar className="h-14 w-14 border-2 border-border">
-                      <AvatarImage src={p.profile?.avatar_url ?? undefined} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
+                    <ProfileAvatar
+                      avatar={p.profile?.avatar_url}
+                      initials={initials}
+                      className="h-14 w-14"
+                    />
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate font-display text-xl">{name}</h3>
                       <div className="mt-1 flex items-center gap-1 text-sm">

@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { CalendarIcon, Clock, Loader2, MapPin } from "lucide-react";
@@ -141,12 +141,11 @@ const Bookings = () => {
                     to={`/providers/detail/${b.provider.id}`}
                     className="group flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-elegant md:flex-row md:items-center"
                   >
-                    <Avatar className="h-14 w-14 shrink-0 border-2 border-border">
-                      <AvatarImage src={b.provider.profile?.avatar_url ?? undefined} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
+                    <ProfileAvatar
+                      avatar={b.provider.profile?.avatar_url}
+                      initials={initials}
+                      className="h-14 w-14 shrink-0"
+                    />
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
