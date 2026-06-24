@@ -274,10 +274,14 @@ ${constraints || "(none specified)"}`;
 
 /* ---------- Chatbot ---------- */
 function ChatTool() {
+  const { session } = useAuth();
   const transport = useRef(
     new DefaultChatTransport({
       api: `${FN_URL}/toolbox-chat`,
-      headers: AUTH_HEADERS,
+      headers: () => ({
+        Authorization: `Bearer ${session?.access_token ?? ""}`,
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+      }),
     }),
   ).current;
 
@@ -285,6 +289,7 @@ function ChatTool() {
     transport,
     onError: (e) => toast.error(e.message ?? "Chat error"),
   });
+
 
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
