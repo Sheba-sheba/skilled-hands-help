@@ -14,9 +14,10 @@ import {
 import { Mail, CalendarClock, MessageCircle, Sparkles, Send, Loader2, Copy, Check, ClipboardCheck, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import { getCategory, type CategorySlug } from "@/lib/categories";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface BookingDraft {
   category: CategorySlug;
@@ -28,10 +29,7 @@ export interface BookingDraft {
 export const BOOKING_DRAFT_KEY = "toolbox:booking_draft";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
-const AUTH_HEADERS = {
-  Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-  apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-};
+
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
