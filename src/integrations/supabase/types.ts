@@ -244,7 +244,13 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_my_provider_license: {
+        Args: never
+        Returns: {
+          license_doc_name: string
+          license_doc_path: string
+        }[]
+      }
     }
     Enums: {
       app_role: "customer" | "provider" | "admin"
