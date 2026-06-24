@@ -1,4 +1,5 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { createClient } from "npm:@supabase/supabase-js@2";
 import {
   convertToModelMessages,
   streamText,
@@ -61,6 +62,21 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
       return new Response("Missing LOVABLE_API_KEY", { status: 500, headers: corsHeaders });
+    }
+
+    // Require an authenticated user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+    );
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claims, error: authError } = await supabase.auth.getClaims(token);
+    if (authError || !claims?.claims?.sub) {
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     }
 
     const { messages } = (await req.json()) as { messages: UIMessage[] };
