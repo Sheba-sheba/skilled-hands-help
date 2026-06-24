@@ -433,9 +433,13 @@ function ChatTool() {
 
 /* ---------- Page ---------- */
 export default function AiToolbox() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/auth" replace />;
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+
       <main className="container py-10">
         <div className="mb-8 max-w-2xl">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-accent">
