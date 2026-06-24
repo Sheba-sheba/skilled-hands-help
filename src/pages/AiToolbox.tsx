@@ -14,9 +14,10 @@ import {
 import { Mail, CalendarClock, MessageCircle, Sparkles, Send, Loader2, Copy, Check, ClipboardCheck, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import { getCategory, type CategorySlug } from "@/lib/categories";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface BookingDraft {
   category: CategorySlug;
@@ -28,10 +29,7 @@ export interface BookingDraft {
 export const BOOKING_DRAFT_KEY = "toolbox:booking_draft";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
-const AUTH_HEADERS = {
-  Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-  apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-};
+
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -276,10 +274,14 @@ ${constraints || "(none specified)"}`;
 
 /* ---------- Chatbot ---------- */
 function ChatTool() {
+  const { session } = useAuth();
   const transport = useRef(
     new DefaultChatTransport({
       api: `${FN_URL}/toolbox-chat`,
-      headers: AUTH_HEADERS,
+      headers: () => ({
+        Authorization: `Bearer ${session?.access_token ?? ""}`,
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+      }),
     }),
   ).current;
 
@@ -287,6 +289,7 @@ function ChatTool() {
     transport,
     onError: (e) => toast.error(e.message ?? "Chat error"),
   });
+
 
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -430,9 +433,13 @@ function ChatTool() {
 
 /* ---------- Page ---------- */
 export default function AiToolbox() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/auth" replace />;
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+
       <main className="container py-10">
         <div className="mb-8 max-w-2xl">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-accent">
